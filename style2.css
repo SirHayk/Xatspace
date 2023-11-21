@@ -6,6 +6,7 @@
 
 .container{  padding-top: 20px;
   padding-bottom: 4px;}
+
 body{
   background-color: #111845;
   -webkit-font-smoothing: antialiased;
@@ -461,6 +462,11 @@ h5{
   text-transform: uppercase;
   color: #585858;
   font-family: 'Roboto', sans-serif;
+}
+
+.wrapper:hover {
+  box-shadow: 0 10px 35px 0px rgba(0,0,0,.1);
+  color: blue;      
 }
 
 .modal {

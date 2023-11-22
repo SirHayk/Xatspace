@@ -455,6 +455,7 @@ h5{
 
 .wrapper a {
   display: inline-block;
+  position: relative;
   text-decoration: none;
   padding: 15px;
   background-color: #fff;
@@ -464,9 +465,38 @@ h5{
   font-family: 'Roboto', sans-serif;
 }
 
-.wrapper:hover {
-  box-shadow: 0 10px 35px 0px rgba(0,0,0,.1);
-  color: blue;      
+.button {
+  display: block;
+  text-decoration: none;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 1px;
+  text-transform: uppercase;
+  color: #F4DFSF
+  font-family: 'Ubuntu', sans-serif;
+  transition: color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.wrapper:hover .button {
+  animation: vibrate 0.3s ease infinite;
+}
+
+@keyframes vibrate {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  50% {
+    transform: translateX(2px);
+  }
+  75% {
+    transform: translateX(-2px);
+  }
+  100% {
+    transform: translateX(2px);
+  }
 }
 
 .modal {
@@ -480,7 +510,6 @@ h5{
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(77, 77, 77, .7);
   transition: all .4s;
 }
 

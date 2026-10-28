@@ -15,147 +15,171 @@ body{
   color: #2693FF;
 }
 
+/* =====================================================
+   CAJA PRINCIPAL (imagen de fondo + recuadro central)
+   Crece sola si se añade texto. Colores: busca #111845, #2a3cad, #50dfdb
+   ===================================================== */
 .background-img{
   background-image: url("https://xatimg.com/image/lGyxAp0bL0d9.png");
-height: 400px;
-  width: 800px;
   background-repeat: no-repeat;
   background-size: cover;
+  width: 800px;
+  max-width: 100%;
+  min-height: 400px;          /* antes height:400px -> ahora puede crecer */
   margin: 5% auto;
-  padding:20px;
+  padding: 50px 20px;
+  box-sizing: border-box;
   border: 1px solid #2a3cad;
   border-radius: 4px;
   box-shadow: 0px 0px 5px #2a3cad;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.content h2{ font-size:19px;}
-
 .box{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;         /* antes absolute + translate(-50%,-50%) */
+  display: flex;
   width: 300px;
-  height: 300px;
-  background: #111845a6;
+  max-width: 100%;
+  min-height: 300px;          /* antes height:300px -> ahora puede crecer */
   box-sizing: border-box;
-  overflow: hidden;
+  padding: 15px;
+  background: #111845a6;
+  overflow: hidden;           /* solo recorta el destello del hover */
   box-shadow: 0 20px 50px rgb(23, 32, 90);
   border: 2px solid #2a3cad;
   color: white;
-  padding: 20px;
   font-family: 'Ubuntu', sans-serif;
 }
 
+/* Destello al pasar el ratón */
 .box:before{
   content: '';
-  position:absolute;
-  top:0;
-  left:-100%;
-  width:100%;
-  height:100%;
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
   background: rgba(255,255,255,0.1);
-  transition:0.5s;
+  transition: 0.5s;
   pointer-events: none;
 }
-
 .box:hover:before{
-  left:-50%;
+  left: -50%;
   transform: skewX(-5deg);
 }
 
-
+/* Marco interior con los textos: se apilan solos con separación (gap) */
 .box .content{
-  position:absolute;
-  top:15px;
-  left:15px;
-  right:15px;
-  bottom:15px;
-  border:1px solid #f0a591;
-  padding:5px;
-  text-align:center;
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;                   /* separación entre líneas: cámbiala aquí */
+  padding: 12px 10px;
+  border: 1px solid #f0a591;
+  text-align: center;
+  overflow-wrap: anywhere;    /* palabras largas no se salen de la caja */
   box-shadow: 0 5px 10px rgba(9,0,0,0.5);
-  
+}
+.box .content :is(h1,h2,h3,h4,p){
+  margin: 0;
+  font-size: 1rem;            /* cambia aquí el tamaño de los textos */
+  font-weight: 400;
+  line-height: 1.35;
+}
+.box .content img{
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
+/* Grupos de textos dentro del recuadro: cada grupo tiene su propia separación.
+   Cambia el valor de --gap para ajustar el espacio entre líneas de ese grupo.
+   El espacio ENTRE grupos lo marca el gap de .box .content (8px). */
+.box .content .group{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap, 8px);
+}
+.group--titulo{    --gap: 0; }     /* nombre y datos: casi pegados */
+.box .content .group--titulo :is(h1,h3,p){ line-height: 1.2; }   /* subir/bajar para más/menos espacio */
+.group--servicios{ --gap: 8px; }   /* servicios: como estaba */
+.group--botones{                    /* botones: cerca, sin pegarse */
+  --gap: 0;
+  margin-top: 4px;
+}
+.group--botones .btn-shine{
+  margin-top: 0;
+  padding: 1px 24px;               /* el espacio visible entre botones es este padding */
+  line-height: 1.35;
+}
+
+/* Líneas animadas del borde (una por lado, funcionan con cualquier alto) */
 .box span{
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   display: block;
-  box-sizing: border-box;
-  
+  pointer-events: none;
 }
-
-.box span:nth-child(1)
-{
-  transform:rotate(0deg);
-}
-
-.box span:nth-child(2)
-{
-  transform:rotate(90deg);
-}
-
-.box span:nth-child(3)
-{
-  transform:rotate(180deg);
-}
-
-.box span:nth-child(4)
-{
-  transform:rotate(270deg);
-}
-
-.box span:before
-{
+.box span:before{
   content: '';
   position: absolute;
-  width:100%;
-  height: 2px;
   background: #50dfdb;
-  animation: animate 4s linear infinite;
+  animation-duration: 4s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.box span:nth-child(1):before{ top:0;    left:0;  width:100%; height:2px; animation-name: line-top; }
+.box span:nth-child(2):before{ top:0;    right:0; width:2px;  height:100%; animation-name: line-right; }
+.box span:nth-child(3):before{ bottom:0; right:0; width:100%; height:2px; animation-name: line-bottom; }
+.box span:nth-child(4):before{ bottom:0; left:0;  width:2px;  height:100%; animation-name: line-left; }
+
+@keyframes line-top{
+  0%{transform:scaleX(0);transform-origin:left}
+  50%{transform:scaleX(1);transform-origin:left}
+  50.1%{transform:scaleX(1);transform-origin:right}
+  100%{transform:scaleX(0);transform-origin:right}
+}
+@keyframes line-bottom{
+  0%{transform:scaleX(0);transform-origin:right}
+  50%{transform:scaleX(1);transform-origin:right}
+  50.1%{transform:scaleX(1);transform-origin:left}
+  100%{transform:scaleX(0);transform-origin:left}
+}
+@keyframes line-right{
+  0%{transform:scaleY(0);transform-origin:top}
+  50%{transform:scaleY(1);transform-origin:top}
+  50.1%{transform:scaleY(1);transform-origin:bottom}
+  100%{transform:scaleY(0);transform-origin:bottom}
+}
+@keyframes line-left{
+  0%{transform:scaleY(0);transform-origin:bottom}
+  50%{transform:scaleY(1);transform-origin:bottom}
+  50.1%{transform:scaleY(1);transform-origin:top}
+  100%{transform:scaleY(0);transform-origin:top}
 }
 
-@keyframes animate {
-  0% {
-  transform:scaleX(0);
-  transform-origin: left;
-  }
-  50%
-  {
-    transform:scaleX(1);
-  transform-origin: left;
-  }
-  50.1%
-  {
-    transform:scaleX(1);
-  transform-origin: right;
-    
-  }
-  
-  100%
-  {
-    transform:scaleX(0);
-  transform-origin: right;
-    
-  }
-  
-  
-}
+/* Botón con brillo (ahora dentro del flujo, ya no se solapa con el texto) */
 .btn-shine {
-  position: absolute;
-  top: 65%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 12px 48px;
+  display: inline-block;
+  max-width: 100%;
+  margin-top: 4px;
+  padding: 8px 24px;
   color: #fff;
-  background: linear-gradient(to right, #0769E0 0, #fff 10%, #0769E0 20%);
-  background-position: 0;
+  /* destello blanco: el degradado mide 3x el ancho del botón y se desplaza en % */
+  background: linear-gradient(to right, #0769E0 46.67%, #fff 50%, #0769E0 53.33%);
+  background-size: 300% 100%;
+  background-repeat: no-repeat;
+  background-position: 80% 0;
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: shine 3s infinite linear;
   animation-fill-mode: forwards;
@@ -165,49 +189,10 @@ height: 400px;
   text-decoration: none;
   white-space: nowrap;
 }
-@-moz-keyframes shine {
-  0% {
-    background-position: 0;
-  }
-  60% {
-    background-position: 180px;
-  }
-  100% {
-    background-position: 180px;
-  }
-}
-@-webkit-keyframes shine {
-  0% {
-    background-position: 0;
-  }
-  60% {
-    background-position: 180px;
-  }
-  100% {
-    background-position: 180px;
-  }
-}
-@-o-keyframes shine {
-  0% {
-    background-position: 0;
-  }
-  60% {
-    background-position: 180px;
-  }
-  100% {
-    background-position: 180px;
-  }
-}
 @keyframes shine {
-  0% {
-    background-position: 0;
-  }
-  60% {
-    background-position: 180px;
-  }
-  100% {
-    background-position: 180px;
-  }
+  0%   { background-position: 80% 0; }
+  60%  { background-position: 20% 0; }
+  100% { background-position: 20% 0; }
 }
 
 .hover_effect {
@@ -426,16 +411,18 @@ width:110px;
   font-family: 'Ubuntu', sans-serif;
 }
 
+/* Copyright superior (posición fija arriba, no depende del alto de pantalla) */
 h5{
-  font-size:3rem;
-  margin-top:45vh;
-  color:white;
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-size: 1rem;
+  color: white;
   font-family: 'Ubuntu', sans-serif;
-  animation-name:glow;
-  animation-duration:1s;
-  animation-iteration-count:infinite;
-  animation-direction:alternate;
-  justify-content: center;
+  animation: glow 1s infinite alternate;
 }
 
 @keyframes glow{
